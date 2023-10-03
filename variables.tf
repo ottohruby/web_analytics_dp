@@ -12,3 +12,15 @@ variable "data-logger_domain"{
     default = "dp-logger.ottohruby.cz"
 }
 
+variable "required_apis"{
+    type = list(string)
+    default= [
+        "cloudresourcemanager.googleapis.com",
+        "apikeys.googleapis.com",
+        "compute.googleapis.com",
+        "sqladmin.googleapis.com",
+        "iam.googleapis.com",
+        "pubsub.googleapis.com"
+    ]
+}
+
