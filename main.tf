@@ -3,7 +3,7 @@ provider "google" {
   region = "${var.region}"
 }
 
-variable "gcp_required_apis"{
+variable "required_apis"{
   type = list(string)
   default= [
     "cloudresourcemanager.googleapis.com",
@@ -14,8 +14,14 @@ variable "gcp_required_apis"{
     ]
 }
 
-resource "google_project_service" "gcp_api" {
-  for_each = toset(var.gcp_required_apis)
+resource "google_project_service" "api" {
+  for_each = toset(var.required_apis)
   project = var.project_id
   service = each.key
 }
+
+module "data_logger" {
+  source = "./modules/data-logger"
+  depends_on = [google_project_service.api]
+}
+
