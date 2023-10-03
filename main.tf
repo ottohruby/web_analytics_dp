@@ -20,11 +20,12 @@ resource "google_project_service" "api" {
   service = each.key
 }
 
-module "data_logger" {
+module "data-logger" {
   source = "./modules/data-logger"
   depends_on = [google_project_service.api]
 
   project_id = var.project_id
   region = var.region
+  data-logger_domain = var.data-logger_domain
 }
 
