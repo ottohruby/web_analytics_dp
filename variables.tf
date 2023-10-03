@@ -20,7 +20,8 @@ variable "required_apis"{
         "compute.googleapis.com",
         "sqladmin.googleapis.com",
         "iam.googleapis.com",
-        "pubsub.googleapis.com"
+        "pubsub.googleapis.com",
+        "run.googleapis.com"
     ]
 }
 
