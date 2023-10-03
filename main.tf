@@ -16,6 +16,6 @@ variable "gcp_required_apis"{
 
 resource "google_project_service" "gcp_api" {
   for_each = toset(var.gcp_required_apis)
-  project = data.gcp_project.project.project_id
+  project = var.project_id
   service = each.key
 }
