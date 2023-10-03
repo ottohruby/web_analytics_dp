@@ -24,6 +24,6 @@ module "data_logger" {
   source = "./modules/data-logger"
   depends_on = [google_project_service.api]
 
-  project_id = "${var.project_id}"
+  project_id = var.project_id
 }
 
