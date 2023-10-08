@@ -37,7 +37,7 @@ resource "google_pubsub_subscription" "data-logger-events--bigquery--all" {
   topic = google_pubsub_topic.data-logger-events.name
 
   bigquery_config {
-    table = "${google_bigquery_table.data-logger_events.project}.${google_bigquery_table.data-logger_events.dataset_id}.${google_bigquery_table.data-logger_events.table_id}"
+    table = "${google_bigquery_table.data_logger_events.project}.${google_bigquery_table.data_logger_events.dataset_id}.${google_bigquery_table.data_logger_events.table_id}"
   }
 
   depends_on = [google_project_iam_member.viewer, google_project_iam_member.editor]
@@ -55,16 +55,16 @@ resource "google_project_iam_member" "editor" {
   member = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
 }
 
-resource "google_bigquery_dataset" "data-logger" {
+resource "google_bigquery_dataset" "data_logger" {
   project = var.project_id
-  dataset_id = "data-logger"
+  dataset_id = "data_logger"
 }
 
-resource "google_bigquery_table" "data-logger_events" {
+resource "google_bigquery_table" "data_logger_events" {
   project = var.project_id
   deletion_protection = false
-  table_id   = "data-logger_events"
-  dataset_id = google_bigquery_dataset.data-logger.dataset_id
+  table_id   = "events"
+  dataset_id = google_bigquery_dataset.data_logger.dataset_id
 
   schema = <<EOF
 [
