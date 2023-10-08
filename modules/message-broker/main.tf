@@ -9,7 +9,7 @@ resource "google_pubsub_topic" "data-logger-events" {
 
 resource "google_pubsub_topic_iam_binding" "binding" {
   project = var.project_id
-  topic = google_pubsub_topic.data-logger-event.name
+  topic = google_pubsub_topic.data-logger-events.name
   role = "roles/pubsub.publisher"
 
   members = [
@@ -17,7 +17,7 @@ resource "google_pubsub_topic_iam_binding" "binding" {
   ]
 
   depends_on = [
-    google_pubsub_topic.data-logger-event
+    google_pubsub_topic.data-logger-events
   ]
 }
 
