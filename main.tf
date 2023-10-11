@@ -3,6 +3,19 @@ provider "google" {
     region = var.region
 }
 
+resource "google_project_service" "cloud_serviceusage_api" {
+  project                    = var.project_id
+  service                    = "serviceusage.googleapis.com"
+  disable_dependent_services = true
+}
+
+resource "google_project_service" "cloudresourcemanager_api" {
+  depends_on                 = [google_project_service.cloud_serviceusage_api]
+  project                    = var.project_id
+  service                    = "cloudresourcemanager.googleapis.com"
+  disable_dependent_services = true
+}
+
 resource "google_project_service" "api" {
     for_each = toset(var.required_apis)
     project = var.project_id
