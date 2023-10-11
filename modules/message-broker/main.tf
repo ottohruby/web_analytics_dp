@@ -8,28 +8,28 @@ variable "schema-data-logger-events" {
   default = <<EOF
 syntax = "proto3";
 
-message Item {
+message Event {
+  message Item {
     string category = 1;
     string id = 2;
     string list = 3;
     string name = 4;
-    string position = 5;
-    string quantity = 6;
+    int32 position = 5;
+    int32 quantity = 6;
     string unit = 7;
     string value = 8;
-}
+  }
 
-message Event {
     string event_date = 1;
     string event_timestamp_micros = 2;
     string event_name = 3;
     string description = 4;
     string device_id = 5;
     string device_type = 6;
-    string is_conversion = 7;
-    string is_new_device = 8;
-    string is_new_session = 9;
-    string items_quantity = 10;
+    int32 is_conversion = 7;
+    int32 is_new_device = 8;
+    int32 is_new_session = 9;
+    int32 items_quantity = 10;
     repeated Item items = 11;
     string event_value = 12;
     string event_unit = 13;
