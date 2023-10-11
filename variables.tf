@@ -15,7 +15,6 @@ variable "data-logger_domain"{
 variable "required_apis"{
     type = list(string)
     default= [
-        "cloudresourcemanager.googleapis.com",
         "apikeys.googleapis.com",
         "compute.googleapis.com",
         "sqladmin.googleapis.com",
