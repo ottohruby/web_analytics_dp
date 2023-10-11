@@ -41,6 +41,7 @@ module "data-logger" {
 
 module "message-broker" {
     source = "./modules/message-broker"
+    depends_on = [google_project_service.api]
 
     project_id = var.project_id
     region = var.region 
