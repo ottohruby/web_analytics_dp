@@ -20,9 +20,9 @@ message Event {
     string value = 8;
   }
 
-    required string event_date = 1;
-    required int64 event_timestamp_micros = 2;
-    required string event_name = 3;
+    string event_date = 1;
+    int64 event_timestamp_micros = 2;
+    string event_name = 3;
     string description = 4;
     string device_id = 5;
     string device_type = 6;
@@ -133,19 +133,16 @@ resource "google_bigquery_table" "data_logger_events" {
     {
         "name": "event_date",
         "type": "DATE",
-        "mode": "REQUIRED",
         "description": "The date when the event occurred."
     },
     {
         "name": "event_timestamp_micros",
         "type": "INTEGER",
-        "mode": "REQUIRED",
         "description": "The timestamp in microseconds when the event occurred."
     },
     {
         "name": "event_name",
         "type": "STRING",
-        "mode": "REQUIRED",
         "description": "The name of the event."
     },
     {
