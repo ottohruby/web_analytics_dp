@@ -20,9 +20,9 @@ message Event {
     string value = 8;
   }
 
-    string event_date = 1;
-    string event_timestamp_micros = 2;
-    string event_name = 3;
+    required string event_date = 1;
+    required string event_timestamp_micros = 2;
+    required string event_name = 3;
     string description = 4;
     string device_id = 5;
     string device_type = 6;
