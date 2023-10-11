@@ -14,7 +14,7 @@ resource "google_pubsub_topic" "data-logger-events" {
 
   depends_on = [google_pubsub_schema.example]
   schema_settings {
-    schema = "projects/" + var.project_id + "/schemas/" + google_pubsub_schema.name
+    schema = "projects/" + var.project_id + "/schemas/" + google_pubsub_schema.data-logger-events.name
     encoding = "JSON"
   }
 
