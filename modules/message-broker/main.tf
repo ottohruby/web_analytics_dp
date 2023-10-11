@@ -2,9 +2,22 @@ data "google_project" "project" {
     project_id= var.project_id
 }
 
+resource "google_pubsub_schema" "data-logger-events" {
+  name = "data-logger-events"
+  type = "PROTOCOL_BUFFER"
+  definition = "syntax = \"proto3\";\nmessage Event {\nstring event_date = 1;\nstring event_timestamp_micros = 2;\nstring event_name = 3;\nstring description = 4;\nstring device_id = 5;\nstring device_type = 6;\nstring is_conversion = 7;\nstring is_new_device = 8;\nstring is_new_session = 9;\nstring items_quantity = 10;\nrepeated Item items = 11;\nstring event_value = 12;\nstring event_unit = 13;\nstring event_source = 14;\nstring event_medium = 15;\nstring event_campaign = 16;\nstring privacy = 17;\nstring session_campaign = 18;\nstring session_id = 19;\nstring session_medium = 20;\nstring session_number = 21;\nstring session_source = 22;\nstring user_agent = 23;\n}"
+}
+
 resource "google_pubsub_topic" "data-logger-events" {
   project = var.project_id
   name = "data-logger-events"
+
+  depends_on = [google_pubsub_schema.example]
+  schema_settings {
+    schema = "projects/" + var.project_id + "/schemas/" + google_pubsub_schema.name
+    encoding = "JSON"
+  }
+
 }
 
 resource "google_pubsub_topic_iam_binding" "binding" {
@@ -77,3 +90,11 @@ resource "google_bigquery_table" "data_logger_events" {
 ]
 EOF
 }
+
+
+
+
+
+
+
+
