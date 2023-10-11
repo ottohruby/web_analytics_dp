@@ -97,6 +97,8 @@ resource "google_pubsub_subscription" "data-logger-events--bigquery--all" {
 
   bigquery_config {
     table = "${google_bigquery_table.data_logger_events.project}.${google_bigquery_table.data_logger_events.dataset_id}.${google_bigquery_table.data_logger_events.table_id}"
+    use_topic_schema = true
+    drop_unknown_fields = true
   }
 
   depends_on = [google_project_iam_member.viewer, google_project_iam_member.editor]
@@ -126,14 +128,165 @@ resource "google_bigquery_table" "data_logger_events" {
   dataset_id = google_bigquery_dataset.data_logger.dataset_id
 
   schema = <<EOF
+
 [
-  {
-    "name": "data",
-    "type": "STRING",
-    "mode": "NULLABLE",
-    "description": "The data"
-  }
+    {
+        "name": "event_date",
+        "type": "DATE",
+        "mode": "REQUIRED",
+        "description": "The date when the event occurred."
+    },
+    {
+        "name": "event_timestamp_micros",
+        "type": "TIMESTAMP",
+        "mode": "REQUIRED",
+        "description": "The timestamp in microseconds when the event occurred."
+    },
+    {
+        "name": "event_name",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "The name of the event."
+    },
+    {
+        "name": "device_id",
+        "type": "STRING",
+        "description": "The unique identifier for the device."
+    },
+    {
+        "name": "device_type",
+        "type": "STRING",
+        "description": "The type of the device."
+    },
+    {
+        "name": "is_conversion",
+        "type": "INTEGER",
+        "description": "A flag indicating if the event is a conversion event (1 means conversion)."
+    },
+    {
+        "name": "is_new_device",
+        "type": "INTEGER",
+        "description": "A flag indicating if the device is new during the event (1 means new device)."
+    },
+    {
+        "name": "is_new_session",
+        "type": "INTEGER",
+        "description": "A flag indicating if the session is new during the event (1 means new session)."
+    },
+    {
+        "name": "items_quantity",
+        "type": "INTEGER",
+        "description": "The quantity of items associated with the event."
+    },
+    {
+        "name": "items",
+        "type": "RECORD",
+        "mode": "REPEATED",
+        "fields": [
+            {
+                "name": "category",
+                "type": "STRING",
+                "description": "The category of the item."
+            },
+            {
+                "name": "id",
+                "type": "STRING",
+                "description": "The unique identifier of the item."
+            },
+            {
+                "name": "list",
+                "type": "STRING",
+                "description": "The list or group to which the item belongs."
+            },
+            {
+                "name": "name",
+                "type": "STRING",
+                "description": "The name or title of the item."
+            },
+            {
+                "name": "position",
+                "type": "INTEGER",
+                "description": "The position of the item in the list."
+            },
+            {
+                "name": "quantity",
+                "type": "INTEGER",
+                "description": "The quantity of the item."
+            },
+            {
+                "name": "unit",
+                "type": "STRING",
+                "description": "The unit of measurement for the item."
+            },
+            {
+                "name": "value",
+                "type": "NUMERIC",
+                "description": "The value or price of the item."
+            }
+        ]
+    },
+    {
+        "name": "event_value",
+        "type": "NUMERIC",
+        "description": "The value associated with the event."
+    },
+    {
+        "name": "event_unit",
+        "type": "STRING",
+        "description": "The unit of measurement for the event value."
+    },
+    {
+        "name": "event_source",
+        "type": "STRING",
+        "description": "The source of the event (google,seznam,...)"
+    },
+    {
+        "name": "event_medium",
+        "type": "STRING",
+        "description": "The medium of the event (organic,cpc,...)"
+    },
+    {
+        "name": "event_campaign",
+        "type": "STRING",
+        "description": "The campaign associated with the event"
+    },
+    {
+        "name": "privacy",
+        "type": "STRING",
+        "description": ""
+    },
+    {
+        "name": "session_campaign",
+        "type": "STRING",
+        "description": "The campaign associated with the session."
+    },
+    {
+        "name": "session_id",
+        "type": "STRING",
+        "description": "The unique identifier for the session."
+    },
+    {
+        "name": "session_medium",
+        "type": "STRING",
+        "description": "The medium of the session."
+    },
+    {
+        "name": "session_number",
+        "type": "INTEGER",
+        "description": "The session number."
+    },
+    {
+        "name": "session_source",
+        "type": "STRING",
+        "description": "The source of the session."
+    },
+    {
+        "name": "user_agent",
+        "type": "STRING",
+        "description": "The user agent information for the event."
+    }
 ]
+
 EOF
 }
 
