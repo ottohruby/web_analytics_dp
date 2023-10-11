@@ -2,10 +2,56 @@ data "google_project" "project" {
     project_id= var.project_id
 }
 
+variable "schema-data-logger-events" {
+  description = "Protocol Buffers schema definition"
+  type        = string
+  default = <<EOF
+syntax = "proto3";
+
+message Item {
+    string category = 1;
+    string id = 2;
+    string list = 3;
+    string name = 4;
+    string position = 5;
+    string quantity = 6;
+    string unit = 7;
+    string value = 8;
+}
+
+message Event {
+    string event_date = 1;
+    string event_timestamp_micros = 2;
+    string event_name = 3;
+    string description = 4;
+    string device_id = 5;
+    string device_type = 6;
+    string is_conversion = 7;
+    string is_new_device = 8;
+    string is_new_session = 9;
+    string items_quantity = 10;
+    repeated Item items = 11;
+    string event_value = 12;
+    string event_unit = 13;
+    string event_source = 14;
+    string event_medium = 15;
+    string event_campaign = 16;
+    string privacy = 17;
+    string session_campaign = 18;
+    string session_id = 19;
+    string session_medium = 20;
+    int32 session_number = 21;
+    string session_source = 22;
+    string user_agent = 23;
+}
+EOF
+}
+
+
 resource "google_pubsub_schema" "data-logger-events" {
   name = "data-logger-events"
   type = "PROTOCOL_BUFFER"
-  definition = "syntax = \"proto3\";\nmessage Event {\nstring event_date = 1;\nstring event_timestamp_micros = 2;\nstring event_name = 3;\nstring description = 4;\nstring device_id = 5;\nstring device_type = 6;\nstring is_conversion = 7;\nstring is_new_device = 8;\nstring is_new_session = 9;\nstring items_quantity = 10;\nrepeated Item items = 11;\nstring event_value = 12;\nstring event_unit = 13;\nstring event_source = 14;\nstring event_medium = 15;\nstring event_campaign = 16;\nstring privacy = 17;\nstring session_campaign = 18;\nstring session_id = 19;\nstring session_medium = 20;\nstring session_number = 21;\nstring session_source = 22;\nstring user_agent = 23;\n}"
+  definition = var.schema-data-logger-events
 }
 
 resource "google_pubsub_topic" "data-logger-events" {
