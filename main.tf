@@ -7,6 +7,7 @@ resource "google_project_service" "api" {
     for_each = toset(var.required_apis)
     project = var.project_id
     service = each.key
+    disable_dependent_services = true
 }
 
 module "data-logger" {
