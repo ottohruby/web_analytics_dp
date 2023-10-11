@@ -1,3 +1,10 @@
+terraform {
+  required_version = "~> 0.12.24"
+  required_providers {
+    google = "~> 3.17.0"
+  }
+}
+
 provider "google" {
     project = var.project_id
     region = var.region
