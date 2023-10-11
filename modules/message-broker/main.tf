@@ -98,7 +98,7 @@ resource "google_pubsub_subscription" "data-logger-events--bigquery--all" {
   bigquery_config {
     table = "${google_bigquery_table.data_logger_events.project}.${google_bigquery_table.data_logger_events.dataset_id}.${google_bigquery_table.data_logger_events.table_id}"
     use_topic_schema = true
-    # drop_unknown_fields = true
+    drop_unknown_fields = true
   }
 
   depends_on = [google_project_iam_member.viewer, google_project_iam_member.editor]
