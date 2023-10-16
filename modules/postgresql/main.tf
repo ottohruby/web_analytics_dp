@@ -43,6 +43,6 @@ resource "google_sql_user" "user" {
     ]
 
     provisioner "local-exec" {
-        command = "psql postgresql://${google_sql_user.user.name}:${google_sql_user.user.password}@${google_sql_database_instance.main.public_ip_address}/postgres -f db_init.sql"
+        command = "psql postgresql://${google_sql_user.user.name}:${google_sql_user.user.password}@${google_sql_database_instance.main.public_ip_address}/postgres -c \"CREATE TABLE my_table (id serial primary key, name text); INSERT INTO my_table (name) VALUES ('John');\""
     }
 }
