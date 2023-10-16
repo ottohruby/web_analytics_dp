@@ -9,16 +9,7 @@ variable "schema-data-logger-events" {
 syntax = "proto3";
 
 message Event {
-  message Item {
-    string category = 1;
-    string id = 2;
-    string list = 3;
-    string name = 4;
-    int32 position = 5;
-    int32 quantity = 6;
-    string unit = 7;
-    string value = 8;
-  }
+
 
     string event_date = 1;
     int64 event_timestamp_micros = 2;
@@ -30,7 +21,7 @@ message Event {
     int32 is_new_device = 8;
     int32 is_new_session = 9;
     int32 items_quantity = 10;
-    repeated Item items = 11;
+
     string event_value = 12;
     string event_unit = 13;
     string event_source = 14;
