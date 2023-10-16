@@ -32,7 +32,7 @@ resource "google_sql_database_instance" "main" {
 }
 
 // DATABASE USER
-resource "google_sql_user" "admin-user" {
+resource "google_sql_user" "user" {
     instance = google_sql_database_instance.main.name
 
     name     = var.db_credentials.db_user
