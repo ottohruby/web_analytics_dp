@@ -30,3 +30,19 @@ resource "google_sql_database_instance" "main" {
     }
   }
 }
+
+// DATABASE USER
+resource "google_sql_user" "admin-user" {
+    instance = google_sql_database_instance.main.name
+
+    name     = var.db_credentials.db_user
+    password = var.db_credentials.db_password
+
+    depends_on = [
+        "google_sql_database_instance.main"
+    ]
+
+    provisioner "local-exec" {
+        command = "psql postgresql://${google_sql_user.user.name}:${google_sql_user.user.password}@${google_sql_database_instance.my-database.public_ip_address}/postgres -c \"CREATE SCHEMA myschema;\""
+    }
+}
