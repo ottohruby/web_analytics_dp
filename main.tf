@@ -47,3 +47,10 @@ module "message-broker" {
     region = var.region 
 }
 
+module "postgresql" {
+  source = "./modules/postgresql"
+  depends_on = [google_project_service.api]
+
+  project_id = var.project_id
+  region = var.region
+}
