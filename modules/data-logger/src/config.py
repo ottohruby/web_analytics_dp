@@ -4,6 +4,7 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config:
     ENVIRONMENT = 'development'
+    FLASK_RUN_PORT = '8080'
 
 class PubsubConfig:
     PROJECT_ID = os.getenv('PUBSUB_PROJECT_ID', "otto-hruby-dp")
