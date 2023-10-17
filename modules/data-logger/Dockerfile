@@ -13,5 +13,7 @@ RUN pip install --trusted-host pypi.python.org -r ./requirements.txt
 # Copy the rest of the application code into the container
 COPY . .
 
+EXPOSE 8080
+
 # Set the command to run when the container starts
 CMD ["python", "app.py"]
