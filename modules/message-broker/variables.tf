@@ -21,7 +21,23 @@ message Event {
     string page_domain = 4;
     string page_path = 5;
     string page_title = 6;
+
     string user_agent = 7;
+
+    string device_id = 8;
+    string device_type = 9;
+
+    int32 is_conversion = 10;
+    
+    string event_value = 11;
+    string event_unit = 12;
+
+    string session_source = 13;
+    string session_medium = 14;
+    string session_campaign = 15;
+
+    string session_id = 16;
+    int32 session_number = 17;
 }
 EOF
 }
