@@ -17,18 +17,11 @@ message Event {
     string event_date = 1;
     int64 event_timestamp_micros = 2;
     string event_name = 3;
-    string device_id = 4;
-    string device_type = 5;
-    int32 is_conversion = 6;
-    string event_value = 7;
-    string event_unit = 8;
-    string session_source = 9;
-    string session_medium = 10;
-    string session_campaign = 11;
-    string session_id = 12;
-    int32 session_number = 13;
-    string user_agent = 14;
-    int32 items_quantity = 15;
+
+    string page_domain = 4;
+    string page_path = 5;
+    string page_title = 6;
+
 }
 EOF
 }
@@ -52,6 +45,21 @@ variable "schema-bq-data_logger_events" {
         "name": "event_name",
         "type": "STRING",
         "description": "The name of the event."
+    },
+    {
+        "name": "page_domain",
+        "type": "STRING",
+        "description": "The domain or website where the page event occurred."
+    },
+    {
+        "name": "page_path",
+        "type": "STRING",
+        "description": "The path or URL of the page where the event took place."
+    },
+    {
+        "name": "page_title",
+        "type": "STRING",
+        "description": "The title of the page where the event occurred."
     },
     {
         "name": "device_id",
