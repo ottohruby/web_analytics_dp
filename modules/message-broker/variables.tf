@@ -21,7 +21,7 @@ message Event {
     string page_domain = 4;
     string page_path = 5;
     string page_title = 6;
-
+    string user_agent = 7;
 }
 EOF
 }
