@@ -27,8 +27,6 @@ message Event {
     string device_id = 8;
     string device_type = 9;
 
-    int32 is_conversion = 10;
-    
     string event_value = 11;
     string event_unit = 12;
 
@@ -88,11 +86,6 @@ variable "schema-bq-data_logger_events" {
         "description": "The type of the device."
     },
     {
-        "name": "is_conversion",
-        "type": "INTEGER",
-        "description": "A flag indicating if the event is a conversion event (1 means conversion)."
-    },
-        {
         "name": "event_value",
         "type": "NUMERIC",
         "description": "The value associated with the event."
