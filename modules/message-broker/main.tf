@@ -82,6 +82,10 @@ resource "google_bigquery_table" "data_logger_events" {
   dataset_id = google_bigquery_dataset.data_logger.dataset_id
 
   schema = var.schema-bq-data_logger_events
+  time_partitioning {
+    type = "DAY"
+    field = "event_date"
+  }
 }
 
 
