@@ -1,9 +1,6 @@
 # Use an official Python runtime as a parent image
 FROM python:3.10-slim-buster
 
-# Set the working directory to /app
-WORKDIR /app
-
 # Copy the requirements file into the container
 COPY requirements.txt .
 
@@ -16,4 +13,4 @@ COPY . .
 EXPOSE 8080
 
 # Set the command to run when the container starts
-CMD ["python", "app.py"]
+CMD ["gunicorn"  , "-b", "0.0.0.0:8080", "app:app"]
