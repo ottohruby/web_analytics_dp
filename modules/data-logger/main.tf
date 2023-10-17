@@ -18,7 +18,7 @@ resource "google_cloud_run_v2_service" "data-logger" {
   template {
     service_account = google_service_account.service_account.email
     containers {
-      image = "us-docker.pkg.dev/cloudrun/container/hello"
+      image = "europe-west1-docker.pkg.dev/otto-hruby-dp/logger-test/logger-test:latest"
     }
   }
 }
