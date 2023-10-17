@@ -4,16 +4,6 @@ from src.pubsub import publish_to_pubsub
 
 from datetime import datetime
 
-
-def process_event(event):
-    event['user_agent'] = request.headers.get('User-Agent')
-    if 'event_timestamp' not in event or 'event_date' not in event:
-        event["event_date"] = datetime.utcnow().strftime("%Y-%m-%d")
-        event['event_timestamp_micros'] = int(datetime.utcnow().timestamp() * 1000)
-
-    print(event)
-    return event
-
 @bp.route('/collect/v1', methods=["POST", "GET"])
 def collect_v1():
     if request.method != "POST":
@@ -28,10 +18,16 @@ def collect_v1():
     if not events:
         return jsonify({"error": "400 Bad request - JSON body with at least 1 event is required"}), 400
     
+    def process_event(event):
+        event['user_agent'] = request.headers.get('User-Agent')
+        if 'event_timestamp' not in event or 'event_date' not in event:
+            event["event_date"] = datetime.utcnow().strftime("%Y-%m-%d")
+            event['event_timestamp_micros'] = int(datetime.utcnow().timestamp() * 1000)
+
+        return event
     
     for event in events:
         processed_event = process_event(event)
         publish_to_pubsub(processed_event)
-
 
     return jsonify({"processed data": request_json}), 200
