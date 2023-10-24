@@ -14,29 +14,24 @@ variable "schema-data-logger-events" {
 syntax = "proto3";
 
 message Event {
-    string event_date = 1;
-    int64 event_timestamp_micros = 2;
-    string event_name = 3;
+    message Dimension {
+   	    int64 id = 1;
+   	    string val = 2;
+    }
 
-    string page_domain = 4;
-    string page_path = 5;
-    string page_title = 6;
+    message Metric {
+   	    int64 id = 1;
+   	    string val = 2;
+   	    int64 unit = 3;
+    }
 
-    string user_agent = 7;
-
-    string device_id = 8;
-    string device_type = 9;
-
-    string event_value = 11;
-    string event_unit = 12;
-
-    string session_source = 13;
-    string session_medium = 14;
-    string session_campaign = 15;
-
-    string session_id = 16;
-    int32 session_number = 17;
+   	string ev_ts = 1;
+   	int64 ev_id = 2;
+   	int64 lg_id = 3;
+   	repeated Dimension dims = 4;
+   	repeated Metric metrics = 5;
 }
+
 EOF
 }
 
