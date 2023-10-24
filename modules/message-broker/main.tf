@@ -44,31 +44,31 @@ resource "google_pubsub_subscription" "data-logger-events--pull--realtime" {
   enable_message_ordering = false
 }
 
-resource "google_pubsub_subscription" "data-logger-events--bigquery--all" {
-  project = var.project_id
-  name  = "data-logger-events--bigquery--all"
-  topic = google_pubsub_topic.data-logger-events.name
+# resource "google_pubsub_subscription" "data-logger-events--bigquery--all" {
+#   project = var.project_id
+#   name  = "data-logger-events--bigquery--all"
+#   topic = google_pubsub_topic.data-logger-events.name
 
-  bigquery_config {
-    table = "${google_bigquery_table.data_logger_events.project}.${google_bigquery_table.data_logger_events.dataset_id}.${google_bigquery_table.data_logger_events.table_id}"
-    use_topic_schema = true
-    drop_unknown_fields = true
-  }
+#   bigquery_config {
+#     table = "${google_bigquery_table.data_logger_events.project}.${google_bigquery_table.data_logger_events.dataset_id}.${google_bigquery_table.data_logger_events.table_id}"
+#     use_topic_schema = true
+#     drop_unknown_fields = true
+#   }
 
-  depends_on = [google_project_iam_member.viewer, google_project_iam_member.editor]
-}
+#   depends_on = [google_project_iam_member.viewer, google_project_iam_member.editor]
+# }
 
-resource "google_project_iam_member" "viewer" {
-  project = var.project_id
-  role   = "roles/bigquery.metadataViewer"
-  member = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
-}
+# resource "google_project_iam_member" "viewer" {
+#   project = var.project_id
+#   role   = "roles/bigquery.metadataViewer"
+#   member = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
+# }
 
-resource "google_project_iam_member" "editor" {
-  project = data.google_project.project.project_id
-  role   = "roles/bigquery.dataEditor"
-  member = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
-}
+# resource "google_project_iam_member" "editor" {
+#   project = data.google_project.project.project_id
+#   role   = "roles/bigquery.dataEditor"
+#   member = "serviceAccount:service-${data.google_project.project.number}@gcp-sa-pubsub.iam.gserviceaccount.com"
+# }
 
 resource "google_bigquery_dataset" "data_logger" {
   project = var.project_id
