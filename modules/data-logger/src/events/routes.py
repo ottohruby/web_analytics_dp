@@ -9,8 +9,8 @@ def fix_dims(dims):
     ids = dict()
     fixed = []
     for item in dims:
-        id = int(item['id'])
-        val = str(item['val'])
+        id = int(item.get('id'))
+        val = str(item.get('val'))
         if ids.get(id):
             raise ValueError(f"Dimension '{id}' is in list more than once!")
         if id is not None and (val not in ('undefined', 'None')):
@@ -30,12 +30,12 @@ def fix_metrics(metrics):
     ids = dict()
     fixed = []
     for item in metrics:
-        id = int(item['id'])
-        val = str(item['val'])
-        unit = int(item['unit'])
+        id = int(item.get('id'))
+        val = str(item.get('val'))
+        unit = int(item.get('unit'))
         if ids.get(id):
             raise ValueError(f"Dimension '{id}' is in list more than once!")
-        if id is not None and (val not in ('undefined', 'None')):
+        if id is not None and (val not in ('undefined', 'None')) and unit is not None:
             fixed.append({'id': id, 'val': val, 'unit': unit} )
             ids[id] = 1
 
@@ -84,7 +84,7 @@ def collect_v1():
     try:
         event['dims'] = fix_dims(event['dims'])
         event['metrics'] = fix_metrics(event['metrics'])
-    except (ValueError, KeyError) as e:
+    except (ValueError, KeyError, TypeError) as e:
         return jsonify({"error": f"400 Bad request - {e}"}), 400
     publish_to_pubsub(event)
 
