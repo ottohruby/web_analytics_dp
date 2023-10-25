@@ -29,8 +29,8 @@ message Event {
    	int64 ev_id = 2;
    	int64 lg_id = 3;
     int64 aw_id = 4;
-   	repeated Dimension dims = 4;
-   	repeated Metric metrics = 5;
+   	repeated Dimension dims = 5;
+   	repeated Metric metrics = 6;
 }
 
 EOF
