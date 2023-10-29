@@ -39,9 +39,6 @@ def fix_metrics(metrics):
             fixed.append({'id': id, 'val': val, 'unit': unit} )
             ids[id] = 1
 
-    if(not ids.get(10)):
-        fixed.append({'id': 10, 'val': request.headers.get('User-Agent')} )
-
     for id in req:
         if not ids.get(id):
             raise ValueError(f"Required dimension '{id}' is missing")
@@ -65,7 +62,7 @@ def collect_v1():
     event = {}
     try:
         event['ev_ts'] = request_json['ev_ts']
-        event['ev_id'] = int(request_json['ev_id'])
+        event['en_id'] = int(request_json['en_id'])
         event['lg_id'] = int(request_json['lg_id'])
         event['aw_id'] = int(request_json['aw_id'])
         event['dims'] = request_json['dims']
