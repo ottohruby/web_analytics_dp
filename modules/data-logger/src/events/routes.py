@@ -17,8 +17,8 @@ def fix_dims(dims):
             fixed.append({'id': id, 'val': val} )
             ids[id] = 1
 
-    if(not ids.get(10)):
-        fixed.append({'id': 10, 'val': request.headers.get('User-Agent')} )
+    # if(not ids.get(10)):
+    #     fixed.append({'id': 10, 'val': request.headers.get('User-Agent')} )
 
     for id in req:
         if not ids.get(id):
