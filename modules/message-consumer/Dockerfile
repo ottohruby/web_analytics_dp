@@ -1,5 +1,5 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10-slim-buster
+FROM python:3.10-alpine
 
 RUN apk update
 RUN apk add --no-cache postgresql-libs
