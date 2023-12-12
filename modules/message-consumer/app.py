@@ -7,6 +7,7 @@ import time
 import psycopg2
 import json
 from psycopg2.extras import Json
+from psycopg2.pool import ThreadedConnectionPool
 
 PUBSUB_PROJECT_ID = os.environ.get("PUBSUB_PROJECT_ID")
 PUBSUB_SUBSCRIPTION_ID = os.environ.get("PUBSUB_SUBSCRIPTION_ID")
@@ -20,8 +21,32 @@ DB_CONNECTION_STRING = os.environ.get("DB_CONNECTION_STRING")
 DB_PARAMS = psycopg2.extensions.make_dsn(DB_CONNECTION_STRING)
 
 SQL_QUERY = """
-       call insert_event_procedure(%s, %s, %s::timestamp with time zone, %s, %s::jsonb[], %s::jsonb[]);
+       select insert_event_data(%s, %s, %s::timestamp with time zone, %s, %s::jsonb[], %s::jsonb[]);
     """
+
+db_connection_pool = ThreadedConnectionPool(minconn=10, maxconn=10, dsn=DB_PARAMS)
+
+def handle_message(message):
+    message_json = dict()
+    try:
+        message_json = json.loads(message)
+    except json.JSONDecodeError as e:
+        pass  # Drop the message if it is not a valid JSON string
+
+    with db_connection_pool.getconn() as conn:
+        with conn.cursor() as cur:
+            cur.execute(
+                SQL_QUERY,
+                (
+                    message_json.get('lg_id'),
+                    message_json.get('en_id'),
+                    message_json.get('ev_ts'),
+                    message_json.get('aw_id'),
+                    [Json(item) for item in message_json.get('dims', [])],
+                    [Json(item) for item in message_json.get('metrics', [])]
+                )
+            )
+    db_connection_pool.putconn(conn)
 
 def extract(project_id, subscription_id, timeout=10, max_messages=10):
     """Receives messages from a pull subscription with flow control."""
@@ -33,20 +58,7 @@ def extract(project_id, subscription_id, timeout=10, max_messages=10):
         message.ack()
 
         message_data = message.data.decode("utf-8")
-        message_json = dict()
-        try:
-            message_json = json.loads(message_data)
-        except json.JSONDecodeError as e:
-            pass # Drop the message if it is not a valid json string
-
-        with psycopg2.connect(DB_PARAMS) as conn:
-          with conn.cursor() as cur:
-            cur.execute(SQL_QUERY, (message_json.get('lg_id'),
-                                  message_json.get('en_id'),
-                                  message_json.get('ev_ts'),
-                                  message_json.get('aw_id'),
-                                  [Json(item) for item in message_json.get('dims', [])],
-                                  [Json(item) for item in message_json.get('metrics', [])]))
+        handle_message(message_data)
 
 
     # Limit the subscriber to only have ten outstanding messages at a time.
