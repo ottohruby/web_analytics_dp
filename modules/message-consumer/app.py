@@ -24,7 +24,7 @@ SQL_QUERY = """
        select insert_event_data(%s, %s, %s::timestamp with time zone, %s, %s::jsonb[], %s::jsonb[]);
     """
 
-db_connection_pool = ThreadedConnectionPool(minconn=10, maxconn=10, dsn=DB_PARAMS)
+db_connection_pool = ThreadedConnectionPool(minconn=20, maxconn=20, dsn=DB_PARAMS)
 
 def handle_message(message):
     message_json = dict()
