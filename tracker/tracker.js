@@ -50,14 +50,30 @@ if (typeof window.TrackerDP !== 'object') {
         return session_id || getCookie('_tDP_sid') || generateSessionId();
     }
 
+    function getUTMParams(){
+        var urlParams = new URLSearchParams(window.location.search);
+        var s = urlParams.get('utm_source');
+        var m = urlParams.get('utm_medium');
+        var c = urlParams.get('utm_campaign');
+        return {
+            s: s,
+            m: m,
+            c: c
+        };
+    }
+
     function generateCampaignData(){
         campaign_data = {'s': '(direct)', 'm': '(none)', 'c': '(direct)'};
+
+        //getUTMParams();
+        
+
         setCookie('_tDP_cmp', JSON.stringify(campaign_data));
         return campaign_data;
     }
 
     function getCampaignData(){
-        return campaign_data || JSON.parse(getCookie('_tDP_cmp')) || generateCampaignData();
+        return campaign_data || getCookie('_tDP_cmp') || generateCampaignData();
     }
 
     function generateSessionId(){
@@ -102,7 +118,39 @@ if (typeof window.TrackerDP !== 'object') {
         return window_alias.document.referrer;
     }
 
+    function generateDeviceType(){
+        var ua = window_alias.navigator.userAgent.toLowerCase();
+        if(ua.indexOf("iphone") > -1){ return "phone"; }
+        if(ua.indexOf("ipad") > -1){ return "tablet"; }
+        if(ua.indexOf("mac") > -1){ return "desktop"; }
+        if(ua.indexOf("mobi") > -1){ return "phone"; }
+        if(ua.indexOf("android") > -1){ return "tablet"; }
+
+        if (navigator.maxTouchPoints == 0){
+            return 'desktop'
+        }
+        if (window.matchMedia('only screen and (any-pointer: fine)').matches) {
+            return 'desktop';
+        }
+        if(window.matchMedia('(orientation: portrait) and (min-device-height: 768px)').matches){
+            return 'tablet';
+        }
+        if(window.matchMedia('(orientation: portrait)').matches){
+            return 'tablet';
+        }
+        if(window.matchMedia('(orientation: landscape) and (min-device-width: 768px)').matches){
+            return 'phone';
+        }
+        if(window.matchMedia('(orientation: landscape)').matches){
+            return 'phone';
+        }
+        return "n/a";
+    }
+
     function getDeviceType(){
+        if(!device_type){
+            device_type = generateDeviceType();
+        }
         return device_type;
     }
 
@@ -171,24 +219,24 @@ if (typeof window.TrackerDP !== 'object') {
         Public methods
     */
 
-    Tracker.prototype.enable = function(tracking_url, lg_id=0, aw_id=0){
+    Tracker.prototype.enable = function(tracking_url='https://dp-logger.ottohruby.cz/events/collect/v1', lg_id=0, aw_id=0){
         if(this.enabled){ return true; }
         this.enabled = true;
         this.lg_id = lg_id;
         this.aw_id = aw_id;
-        tracking_url = 'https://dp-logger.ottohruby.cz/events/collect/v1'; // todo
+        tracking_url = tracking_url;
         getDeviceId();
         getSessionId();
-        // get_campaign_data
+        getCampaignData();
         if(new_device){ this.push(0); }
         if(new_session){ this.push(1); }
-        this.push(2); // page_view
+        this.push(2);
         return true;
     };
 
     Tracker.prototype.push = function(en_id, dims, metrics){
         console.log('push');
-        // if(!this.enabled) { return; }
+        if(!this.enabled) { return; }
         if(en_id==undefined){ return; }
 
         var data = {};

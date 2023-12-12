@@ -9,7 +9,7 @@ variable "region" {
 
 variable "data-logger_domain"{
     type = string
-    default = "dp-logger.ottohruby.cz"
+    default = "data-logger.ottohruby.cz"
 }
 
 variable "required_apis"{

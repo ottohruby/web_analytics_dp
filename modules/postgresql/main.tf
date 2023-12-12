@@ -45,6 +45,7 @@ resource "google_sql_user" "user" {
     provisioner "local-exec" {
         command = <<EOF
             psql postgresql://${google_sql_user.user.name}:${google_sql_user.user.password}@${google_sql_database_instance.main.public_ip_address}/postgres <<EOS 
+                CREATE EXTENSION pg_cron;
                 CREATE TABLE my_table (id serial primary key, name text); INSERT INTO my_table (name) VALUES ('John');
             EOS
         EOF

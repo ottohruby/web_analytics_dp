@@ -47,6 +47,12 @@ module "message-broker" {
     region = var.region 
 }
 
+module "message-consumer" {
+    source = "./modules/message-consumer"
+    depends_on = [google_project_service.api]
+
+}
+
 module "postgresql" {
   source = "./modules/postgresql"
   depends_on = [google_project_service.api]

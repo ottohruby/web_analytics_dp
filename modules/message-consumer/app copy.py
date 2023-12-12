@@ -9,12 +9,13 @@ import json
 from psycopg2.extras import Json
 from psycopg2.pool import ThreadedConnectionPool
 
-PUBSUB_PROJECT_ID = os.environ.get("PUBSUB_PROJECT_ID")
-PUBSUB_SUBSCRIPTION_ID = os.environ.get("PUBSUB_SUBSCRIPTION_ID")
-PUBSUB_TIMEOUT = int(os.environ.get("PUBSUB_TIMEOUT", 900))
+PUBSUB_PROJECT_ID = os.environ.get("PUBSUB_PROJECT_ID","otto-hruby-dp")
+PUBSUB_SUBSCRIPTION_ID = os.environ.get("PUBSUB_SUBSCRIPTION_ID","data-logger-events--pull--realtime")
+PUBSUB_TIMEOUT = int(os.environ.get("PUBSUB_TIMEOUT", 100))
 PUBSUB_MAX_MESSAGES = int(os.environ.get("PUBSUB_MAX_MESSAGES", 100))
 
-DB_CONNECTION_STRING = os.environ.get("DB_CONNECTION_STRING")
+# Define the connection string
+DB_CONNECTION_STRING = "postgresql://postgres:postgres@35.187.7.142/postgres"
 
 
 # Parse the connection string
@@ -24,7 +25,7 @@ SQL_QUERY = """
        select insert_event_data(%s, %s, %s::timestamp with time zone, %s, %s::jsonb[], %s::jsonb[]);
     """
 
-db_connection_pool = ThreadedConnectionPool(minconn=10, maxconn=20, dsn=DB_PARAMS)
+db_connection_pool = ThreadedConnectionPool(minconn=10, maxconn=10, dsn=DB_PARAMS)
 
 def handle_message(message):
     message_json = dict()
@@ -54,7 +55,7 @@ def extract(project_id, subscription_id, timeout=10, max_messages=10):
     subscription_path = subscriber.subscription_path(project_id, subscription_id)
 
     def callback(message: pubsub_v1.subscriber.message.Message) -> None:
-        # print(f"Received {message.data!r}.")
+        print(f"Received {message.data!r}.")
         message.ack()
 
         message_data = message.data.decode("utf-8")
