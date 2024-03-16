@@ -2,21 +2,29 @@ DROP TABLE IF EXISTS analytics.dimensions CASCADE;
 CREATE TABLE analytics.dimensions (
     id serial PRIMARY KEY,
     name varchar not null,
-    description varchar
+    description varchar,
+    state_id int REFERENCES analytics.states(id)
 );
-INSERT INTO analytics.dimensions (id, name)
-VALUES 
-    (0, 'visitor_id'),
-    (1, 'device_type'),
-    (2, 'page_domain'),
-    (3, 'page_path'),
-    (4, 'page_title'),
-    (5, 'page_referrer'),
-    (6, 'session_id'),
-    (7, 'session_source'),
-    (8, 'session_medium'),
-    (9, 'session_campaign'),
-    (10, 'link_url'),
-    (11, 'item_id'),
-    (12, 'item_name')
-    ;
+
+DO $$
+DECLARE
+    dim_name text;
+    state_id int;
+BEGIN
+    FOR dim_name IN 
+        SELECT UNNEST(ARRAY[
+            'visitor_id', 'device_type', 'page_domain', 'page_path', 'page_title',
+            'page_referrer', 'session_id', 'session_source', 'session_medium',
+            'session_campaign', 'link_url', 'item_id', 'item_name'
+        ]) 
+    LOOP
+        -- Insert a state
+        INSERT INTO analytics.states (state_number, state_name)
+        VALUES (1, 'ACTIVE')
+        RETURNING id INTO state_id;
+	
+	-- Insert a dimension
+	INSERT INTO analytics.dimensions (name, description, state_id)
+	VALUES (dim_name, '', state_id);
+    END LOOP;
+END $$;

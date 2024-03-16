@@ -2,17 +2,28 @@ DROP TABLE IF EXISTS analytics.event_names CASCADE;
 CREATE TABLE analytics.event_names (
     id serial PRIMARY KEY,
     name varchar not null,
-    description varchar
+    description varchar,
+    state_id int REFERENCES analytics.states(id)
 );
-INSERT INTO analytics.event_names (id, name)
-VALUES 
-    (0, 'new_visitor'),
-    (1, 'new_session'),
-    (2, 'page_view'),
-    (3, 'scroll'),
-    (4, 'link_click'),
-    (5, 'purchase'),
-    (6, 'view_item_detail'),
-    (7, 'purchase_item'),
-    (8, 'add_item_to_cart')
-    ;
+
+DO $$
+DECLARE
+    name text;
+    state_id int;
+BEGIN
+    FOR name IN 
+        SELECT UNNEST(ARRAY[
+            'new_visitor', 'new_session', 'page_view', 'scroll', 'link_click',
+            'purchase', 'view_item_detail', 'purchase_item', 'add_item_to_cart'
+        ]) 
+    LOOP
+        -- Insert a state
+        INSERT INTO analytics.states (state_number, state_name)
+        VALUES (1, 'ACTIVE')
+        RETURNING id INTO state_id;
+	
+	-- Insert a dimension
+	INSERT INTO analytics.event_names (name, description, state_id)
+	VALUES (name, '', state_id);
+    END LOOP;
+END $$;

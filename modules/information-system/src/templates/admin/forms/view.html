@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% set route_add = name + '.add' %}
+{% set route_edit = name + '.edit' %}
+
+    <div class="row">
+        <div class="col">
+            <h1 class="h2 mb-2">{{ title }}</h1>
+        </div>
+        <div class="col-auto col-sm-2 text-end">
+            <a href="{{ url_for(route_add) }}" class="btn btn-success w-100 text-nowrap">Add</a>
+        </div>
+    </div>
+
+    <hr class="my-2">
+    
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped" id="eventsTable">
+                <thead>
+                    <tr>
+                        {% for key in items[0] if items %}
+                            <th>{{ key }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                        <tr>
+                            {% for key, value in item.items() %}
+                                {% if key == 'Name' %}
+                                    <td><a href="{{ url_for(route_edit, id=item['ID']) }}">{{ value }}</a></td>
+                                {% else %}
+                                    <td>{{ value }}</td>
+                                {% endif %}
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>   
+    
+    {% include 'includes/data_table.html' %}
+{% endblock %}

@@ -27,7 +27,7 @@ resource "google_compute_instance" "instance-6" {
   machine_type = "e2-micro"
 
   metadata = {
-    gce-container-declaration = "spec:\n  containers:\n  - name: instance-6\n    image: europe-west1-docker.pkg.dev/otto-hruby-dp/message-consumer/message-consumer@sha256:28f703a64eb31a4529caa278e0a4c2e5293c18ffbbe46e73c207fc0f032c29c4\n    env:\n    - name: PUBSUB_PROJECT_ID\n      value: otto-hruby-dp\n    - name: PUBSUB_SUBSCRIPTION_ID\n      value: data-logger-events--pull--realtime\n    - name: DB_CONNECTION_STRING\n      value: postgresql://postgres:postgres@35.187.7.142/postgres\n    stdin: false\n    tty: false\n  restartPolicy: Always\n# This container declaration format is not public API and may change without notice. Please\n# use gcloud command-line tool or Google Cloud Console to run Containers on Google Compute Engine."
+    gce-container-declaration = "spec:\n  containers:\n  - name: instance-6\n    image: europe-west1-docker.pkg.dev/otto-hruby-dp/message-consumer/message-consumer@sha256:fdacf62b60d96d38f0378756fb07d57d98c34bf46cae719c3031251ae6349d3f\n    env:\n    - name: PUBSUB_PROJECT_ID\n      value: otto-hruby-dp\n    - name: PUBSUB_SUBSCRIPTION_ID\n      value: data-logger-events--pull--realtime\n    - name: DB_CONNECTION_STRING\n      value: postgresql://postgres:postgres@35.187.7.142/postgres\n    stdin: false\n    tty: false\n  restartPolicy: Always\n# This container declaration format is not public API and may change without notice. Please\n# use gcloud command-line tool or Google Cloud Console to run Containers on Google Compute Engine."
   }
 
   name = "instance-6"

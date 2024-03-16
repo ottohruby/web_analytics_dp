@@ -1,0 +1,10 @@
+ul li {
+    list-style-type: none;
+  }
+
+  table { table-layout: fixed; }
+
+  td { 
+   overflow: hidden;
+   text-overflow: ellipsis; 
+  }

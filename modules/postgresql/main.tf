@@ -6,14 +6,12 @@ resource "google_sql_database_instance" "main" {
     database_version = "POSTGRES_15"
   
   settings {
-    # Second-generation instance tiers are based on the machine
-    # type. See argument reference below.
     tier = "db-f1-micro" # 0.6 GB RAM, 1 Shared CPU ~ 8 USD / mo
     edition = "ENTERPRISE"
     availability_type = "ZONAL"
 
     disk_autoresize = true
-    disk_autoresize_limit = 50
+    disk_autoresize_limit = 100
     disk_size = 10
     disk_type = "PD_SSD"
     database_flags {

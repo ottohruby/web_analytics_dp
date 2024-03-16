@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<style>
+    .form-divider {
+        border-top: 1px solid #ccc;
+        margin: 20px 0;
+    }
+</style>
+
+    <div class="row">
+        <div class="col">
+            <h1 class="h2 mb-2">{{ title }}</h1>
+        </div>
+        <div class="col-auto col-sm-2 text-end">
+            <a href="{{ url_for('reports.index') }}" class="btn btn-secondary w-100 text-nowrap">Go Back</a>
+        </div>
+    </div>
+    <hr class="my-2">
+  <div class="row">
+    <div class="col">
+        <form method="post">
+            {{ form.hidden_tag() }}
+ 
+            <div class="form-group row mb-1">
+                <label for="{{ form.name.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.name.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.name(class="form-control dropdown-check-list", id=form.name.id) }}
+                </div>
+            </div>
+    
+            <div class="form-group row mb-1">
+                <label for="{{ form.description.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.description.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.description(class="form-control dropdown-check-list", id=form.description.id) }}
+                </div>
+            </div>
+
+            <div class="form-divider"></div>
+ 
+            <div class="form-group row mb-1">
+                <label for="{{ form.logger.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.logger.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.logger(class="form-control dropdown-check-list", id=form.logger.id) }}
+                </div>
+            </div>
+    
+            <div class="form-group row mb-1 {{ form.agg_window.id }}">
+                <label for="{{ form.agg_window.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.agg_window.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.agg_window(class="form-control dropdown-check-list", id=form.agg_window.id, onchange="agg_window_changed()") }}
+                </div>
+            </div>
+
+            <div class="form-group row mb-1">
+                <label for="{{ form.timezone.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.timezone.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.timezone(class="form-control dropdown-check-list", id=form.timezone.id) }}
+                </div>
+            </div>
+    
+            <div class="form-group row mb-1">
+                <label for="{{ form.time_selection.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.time_selection.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.time_selection(class="form-control dropdown-check-list", id=form.time_selection.id) }}
+                </div>
+            </div>
+    
+            <div class="form-group row mb-1">
+                <label for="{{ form.date_from.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.date_from.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.date_from(class="form-control dropdown-check-list", id=form.date_from.id) }}
+                </div>
+            </div>
+    
+            <div class="form-group row mb-1">
+                <label for="{{ form.date_to.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.date_to.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.date_to(class="form-control dropdown-check-list", id=form.date_to.id) }}
+                </div>
+            </div>
+    
+            <div class="form-group row mb-1">
+                <label for="{{ form.event.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.event.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.event(class="form-control dropdown-check-list", id=form.event.id) }}
+                </div>
+            </div>
+
+            <div class="form-divider"></div>
+    
+            <div class="form-group row mb-1">
+                <label for="{{ form.dimension.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.dimension.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.dimension(class="form-control dropdown-check-list", id=form.dimension.id) }}
+                </div>
+            </div>
+
+            <div class="form-divider"></div>
+    
+            <div class="form-group row mb-1">
+                <label for="{{ form.metric.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.metric.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.metric(class="form-control dropdown-check-list", id=form.metric.id) }}
+                </div>
+            </div>
+
+            <div class="form-group row mb-1">
+                <label for="{{ form.function.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.function.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.function(class="form-control dropdown-check-list", id=form.function.id) }}
+                </div>
+            </div>
+
+            <div class="form-group row mb-1">
+                <label for="{{ form.sort.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.sort.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.sort(class="form-control dropdown-check-list", id=form.sort.id) }}
+                </div>
+            </div>
+
+            <div class="form-divider"></div>
+
+            <div class="form-group row mb-1">
+                <label for="{{ form.show_cumsum.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.show_cumsum.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.show_cumsum(class="form-control dropdown-check-list", id=form.show_cumsum.id) }}
+                </div>
+            </div>
+
+            <div class="form-group row mb-1">
+                <label for="{{ form.show_legend.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.show_legend.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.show_legend(class="form-control dropdown-check-list", id=form.show_legend.id) }}
+                </div>
+            </div>
+
+            
+            <div class="form-group row mb-1">
+                <label for="{{ form.max_values.id }}" class="col-sm-2 col-form-label" style="font-weight: bold;">{{ form.max_values.label }}</label>
+                <div class="col-sm-4">
+                    {{ form.max_values(class="form-control dropdown-check-list", id=form.max_values.id) }}
+                </div>
+            </div>
+
+            <div class="form-divider"></div>
+    
+            <div class="form-group row">
+                <div class="col-sm-2 offset-sm-2 mt-3">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function agg_window_changed() {
+        var val = document.getElementById("{{ form.agg_window.id }}").value;
+        var options = document.getElementById("{{ form.time_selection.id }}").options;
+        var granularity = document.getElementById("{{ form.agg_window.id }}").value;
+
+        for (var i = 0; i < options.length; i++) {
+            var display = 'none';
+            var option = options[i].value;
+            if(granularity == 2){
+                display = option == '30m' ? '' : 'none';
+            }  
+            else if(granularity == 3){
+                display = (option == '24h' || option== '48h' || option== 'today' || option == 'absolute') ? '' : 'none'
+            }
+            else if(granularity == 4){
+                display = (option == '7d' || option== '14d' || option== '28d' || option == 'absolute') ? '' : 'none'
+            }
+            else if(granularity == 5){
+                display = option == 'absolute' ? '' : 'none';
+            }
+            options[i].style.display = display;
+        }
+
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].style.display !== 'none') {
+                options[i].selected = true;
+                time_selection_changed(options[i].value)
+                break;
+            }
+        }
+    }
+
+    function time_selection_changed(val){
+            if (val == "absolute") {
+                $("#date_from").show();
+                $("#date_to").show();
+            } else {
+                $("#date_from").hide();
+                $("#date_to").hide();
+            }
+    }
+
+    function event_changed(event) {
+        var val = document.getElementById("{{ form.event.id }}").value;
+        var options = document.getElementById("{{ form.metric.id }}").options;
+
+        for (var i = 0; i < options.length; i++) {
+            var option = options[i].value;
+            var event = option.split("||")[1];
+            var display = event == val ? '' :'none';
+            
+            options[i].style.display = display;
+        }
+
+        for (var i = 0; i < options.length; i++) {
+            if (options[i].style.display !== 'none') {
+                options[i].selected = true;
+                break;
+            }
+        }
+
+        var dimensions = document.getElementById("{{ form.dimension.id }}").querySelectorAll("li");
+        for (var i = 0; i < dimensions.length; i++) {
+            var dimension = dimensions[i];
+            var child = dimension.querySelector("input[type='checkbox']")
+            var option = child.value;
+            var event = option.split("||")[1];
+            var display = (event == val) ? '' : 'none';
+
+            dimension.style.display = display;
+        }
+    }
+
+
+    $(document).ready(function(){
+        agg_window_changed();
+        $("#agg_window").change(function(){ agg_window_changed(); });
+        $("#time_selection").change(function() {
+            time_selection_changed($(this).val());
+        });
+        event_changed();
+        $("#event").change(function() {
+            event_changed($(this).val());
+        });
+    });
+</script>
+
+{% endblock %}
+

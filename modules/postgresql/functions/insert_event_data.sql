@@ -1,7 +1,3 @@
-#https://stackoverflow.com/questions/28250376/do-stored-procedures-run-in-database-transaction-in-postgres
-#https://www.postgresql.org/docs/current/plpgsql-control-structures.html#PLPGSQL-ERROR-TRAPPING
-
-
 DROP TABLE IF EXISTS analytics.errors CASCADE;
 CREATE TABLE analytics.errors (
     id SERIAL, 
@@ -44,12 +40,25 @@ BEGIN
     -- Insert data into event_metrics from the metrics array
     FOR i IN 1..array_length(metrics, 1)
     LOOP
-        INSERT INTO analytics.event_metrics (event_id, metric_id, unit_id, value)
-        VALUES (
+	if ((metrics[i]->>'function_id')::integer) is not null then
+	        INSERT INTO analytics.event_metrics (event_id, metric_id, unit_id, value, function_id)
+        	VALUES (
 			temp_event_id,
 			(metrics[i]->>'id')::integer, 
 			(metrics[i]->>'unit')::integer, 
-			(metrics[i]->>'val')::numeric);
+			(metrics[i]->>'val')::numeric,
+			(metrics[i]->>'function_id')::integer);
+	else
+		INSERT INTO analytics.event_metrics (event_id, metric_id, unit_id, value, function_id)
+		SELECT 
+		    temp_event_id,
+		    (metrics[i]->>'id')::integer, 
+		    (metrics[i]->>'unit')::integer, 
+		    (metrics[i]->>'val')::numeric,
+		    a::integer AS function_id
+		FROM 
+		    unnest(ARRAY[1, 2, 3]) AS a;
+	end if;
     END LOOP;
 
     return 1;

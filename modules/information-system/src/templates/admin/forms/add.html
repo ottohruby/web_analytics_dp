@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% set route_index = name + '.index' %}
+
+    <div class="row">
+        <div class="col">
+            <h1 class="h2 mb-2">{{ title }}</h1>
+        </div>
+        <div class="col-auto col-sm-2 text-end">
+            <a href="{{ url_for(route_index) }}" class="btn btn-secondary w-100 text-nowrap">Go Back</a>
+        </div>
+    </div>
+
+    <hr class="my-2">
+
+  {% include 'includes/edit_form.html' %}
+
+{% endblock %}
+

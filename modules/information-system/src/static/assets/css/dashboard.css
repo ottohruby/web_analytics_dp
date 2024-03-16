@@ -17,6 +17,11 @@
   .navbar-search {
     display: block;
   }
+  .sidebar {
+    height: calc(100vh - 48px);
+    position: fixed;
+    overflow-y: auto;
+  }
 }
 
 .sidebar .nav-link {

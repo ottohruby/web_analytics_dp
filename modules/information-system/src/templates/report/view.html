@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% set route = 'reports.edit'%}
+{% block content %}
+<div class="row">
+    <div class="col">
+        <h1 class="h2 mb-1">
+            {{ title }}
+            <a href="{{ url_for(route, id=id) }}" >
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325"/>
+                  </svg>
+            </a>
+        </h1>
+        
+        <h4 class="h6 mb-1" style="color: #444444; font-style: italic;">Event Name: 
+            <span style="font-weight: bold;">{{event_name}}</span>
+        </h3>
+        <h4 class="h6 mb-1" style="color: #444444; font-style: italic;">{{ description }}</h3>
+            
+        <p style="color: #444444; font-style: italic;">Last Refresh: <span style="font-weight: bold;" id="last-update"></span></p>
+        
+    </div>
+
+    <div class="col-auto col-sm-2 text-end">
+        <a href="{{ url_for('reports.index') }}" class="btn btn-secondary w-100 text-nowrap">Go Back</a>
+    </div>
+</div>
+
+<hr class="my-1">
+
+<div class="row">
+    <div class="col">
+        <canvas id="multilineChart" width="400" height="125"></canvas>
+    </div>
+</div>
+<hr class="my-1">
+    <div class="row">
+        <div class="col">
+            <table class="table table-striped" id="eventsTable">
+                <thead>
+                    <tr>
+                        {% for key in headers if headers %}
+                            <th>{{ key }}</th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>   
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+function update_last_update_time() {
+    const lastUpdateTimeElement = document.getElementById("last-update");
+    if (lastUpdateTimeElement) {
+        lastUpdateTimeElement.textContent = new Date().toLocaleString();;
+    }
+}
+</script>
+
+<script>
+var multilineChart;
+var tableColors;
+
+const absoluteFormatterTouching = (value) => {
+    if (value > 0) {
+        return value;
+    } else {
+        return null;
+    }
+}
+
+function update_chart(chart_data){
+    if(multilineChart == undefined){    
+        var ctx = document.getElementById('multilineChart').getContext('2d');
+        multilineChart = new Chart(ctx, {
+            tooltips:{
+        mode: 'index',
+        intersect: false,
+        position: 'nearest'
+ },
+
+            type: 'line',
+            options: {
+                plugins: {
+                    legend: {
+            display: chart_data.settings.show_legend
+         },
+             },
+             
+                animation: {
+                    duration: 0
+                },
+                responsive: true,
+                scales: {
+      x: {
+        display: true,
+        title: {
+          display: true,
+          text: 'Time'
+        }
+      },
+      y: {
+        display: true,
+        
+        title: {
+          display: true,
+          text: '{{yaxis_title}}'
+        }
+      }
+    }
+            }
+        });
+    }
+
+    
+    multilineChart.data = chart_data;
+    multilineChart.update();
+}
+
+var table = document.getElementById("eventsTable");
+var headerRow = table.getElementsByTagName("thead")[0].getElementsByTagName("tr")[0];
+var numberOfHeaderCols = headerRow.getElementsByTagName("th").length;
+
+var dataTable  = $('#eventsTable').DataTable( {
+    "paging": false,
+    order: [[numberOfHeaderCols-1, 'desc']],
+    serverSide: true,
+    searchDelay: 2000,
+    ajax: {
+        url: window.location.pathname + '/data',
+        contentType : "application/json",
+        type: 'POST',
+        data: function(d){
+            return JSON.stringify(d);
+        },
+        
+        dataFilter: function(data){
+            var data = JSON.parse( data );
+            var json = {};
+            var table = (data.table || {});
+            json.data = JSON.parse(table.data);
+            json.data = json.data.map(item => Object.values(item));
+            tableColors = table.colors;
+            
+            json.recordsTotal = json.data.length;
+            json.recordsFiltered = json.data.length;
+
+            update_chart(((data.chart || {})));
+            update_last_update_time();
+            console.log(data);
+            console.log(json);
+            return JSON.stringify( json ); 
+        }
+    },
+    createdRow: function (row, data, dataIndex) {
+        console.log("a",row, data,dataIndex);
+        if (dataIndex < tableColors.length) {
+            $(row).addClass('important-' + dataIndex);
+            var bgColor = tableColors[dataIndex];
+            $('<style>.important-' + dataIndex + ' td { background-color: ' + bgColor + '; }</style>').appendTo('head');
+        }
+
+        
+        
+    },
+    initComplete: function()
+    {
+        var api = dataTable;
+
+        $("#eventsTable_filter input").unbind();
+$("div.dataTables_filter input").keyup( function (e) {
+if (e.keyCode == 13) {
+dataTable.search( this.value ).draw();
+}
+});
+    },  
+} );
+  setInterval(function () {
+    dataTable.ajax.reload();
+  }, 15000);
+
+
+</script>
+
+
+
+{% endblock %}

@@ -4,10 +4,10 @@ CREATE TABLE analytics.agg_windows (
     name VARCHAR
 );
 
-INSERT INTO analytics.agg_windows (id, name)
+INSERT INTO analytics.agg_windows (name)
 VALUES 
-(0, 'REALTIME'),
-(1, 'MINUTE'),
-(2, 'HOUR'),
-(3, 'DAY'),
-(4, 'MONTH');
+('REALTIME'),
+('MINUTE'),
+('HOUR'),
+('DAY'),
+('MONTH');

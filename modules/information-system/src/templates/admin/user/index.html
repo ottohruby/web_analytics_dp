@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+        <div class="col">
+            <h1 class="h2 mb-2">User List</h1>
+        </div>
+        <div class="col-auto col-sm-2 text-end">
+            <a href="{{ url_for('admin.users.add') }}" class="btn btn-success w-100 text-nowrap">Add</a>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Password Hash</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td><a href="{{ url_for('admin.users.edit', id=user.user_id) }}">{{ user.name }}</a></td>
+                            <td>{{ user.email }}</td>
+                            <td>{{ user.password_hash }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

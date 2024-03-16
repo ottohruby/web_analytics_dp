@@ -5,11 +5,28 @@ CREATE TABLE analytics.units (
     name varchar not null,
     description varchar,
     is_base integer default(0),
-    amount numeric not null default(1)
+    amount numeric not null default(1),
+    state_id int REFERENCES analytics.states(id)
 );
-INSERT INTO analytics.units (id, base_unit_id, name, is_base, amount)
-VALUES 
-    (0, null, '-', 1, 1),
-    (1, null, '%', 1, 1),
-    (2, null, 'CZK', 1, 1)
-    ;
+
+
+DO $$
+DECLARE
+    name text;
+	state_id int;
+BEGIN
+    FOR name IN 
+        SELECT UNNEST(ARRAY[
+            '-', '%', 'CZK'
+        ]) 
+    LOOP
+        -- Insert a state
+        INSERT INTO analytics.states (state_number, state_name)
+        VALUES (1, 'ACTIVE')
+        RETURNING id INTO state_id;
+	
+	-- Insert a dimension
+	INSERT INTO analytics.units (name, description, amount, is_base, state_id)
+	VALUES (name, '', 1, 1, state_id);
+    END LOOP;
+END $$;

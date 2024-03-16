@@ -4,5 +4,6 @@ CREATE TABLE analytics.event_metrics (
     event_id integer REFERENCES analytics.event_stats(event_id),
     metric_id integer REFERENCES analytics.metrics(id),
     unit_id integer REFERENCES analytics.units(id),
-    value numeric not null
+    function_id integer REFERENCES analytics.metric_functions(id),
+    value numeric default 0
 );

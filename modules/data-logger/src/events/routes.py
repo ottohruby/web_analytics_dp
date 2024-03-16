@@ -2,10 +2,8 @@ from flask import request, jsonify, request
 from src.events import bp
 from src.pubsub import publish_to_pubsub
 
-# todo check ts
-
 def fix_dims(dims):
-    req = [0, 2, 3, 6]
+    req = [1, 3, 4, 7]
     ids = dict()
     fixed = []
     for item in dims:
@@ -17,16 +15,13 @@ def fix_dims(dims):
             fixed.append({'id': id, 'val': val} )
             ids[id] = 1
 
-    # if(not ids.get(10)):
-    #     fixed.append({'id': 10, 'val': request.headers.get('User-Agent')} )
-
     for id in req:
         if not ids.get(id):
             raise ValueError(f"Required dimension '{id}' is missing")
     return fixed
 
 def fix_metrics(metrics):
-    req = [0]
+    req = [1]
     ids = dict()
     fixed = []
     for item in metrics:

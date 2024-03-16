@@ -15,6 +15,8 @@ PUBSUB_TIMEOUT = int(os.environ.get("PUBSUB_TIMEOUT", 900))
 PUBSUB_MAX_MESSAGES = int(os.environ.get("PUBSUB_MAX_MESSAGES", 100))
 
 DB_CONNECTION_STRING = os.environ.get("DB_CONNECTION_STRING")
+DB_CONNECTION_MAX = int(os.environ.get("DB_CONNECTION_MAX", 10))
+DB_CONNECTION_MIN = int(os.environ.get("DB_CONNECTION_MIN", 5))
 
 
 # Parse the connection string
@@ -24,7 +26,7 @@ SQL_QUERY = """
        select insert_event_data(%s, %s, %s::timestamp with time zone, %s, %s::jsonb[], %s::jsonb[]);
     """
 
-db_connection_pool = ThreadedConnectionPool(minconn=20, maxconn=20, dsn=DB_PARAMS)
+db_connection_pool = ThreadedConnectionPool(minconn=DB_CONNECTION_MIN, maxconn=DB_CONNECTION_MAX, dsn=DB_PARAMS)
 
 def handle_message(message):
     message_json = dict()
