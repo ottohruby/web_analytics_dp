@@ -24,6 +24,7 @@ resource "google_cloud_run_v2_service" "data-logger" {
 }
 
 resource "google_cloud_run_domain_mapping" "data-logger" {
+  count = var.data-logger_domain != "" ? 1 : 0
   project = var.project_id
   location = var.region
   name     = var.data-logger_domain
