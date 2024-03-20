@@ -1,5 +1,5 @@
 from src.extensions.database import db
-from src.extensions.cache import cache
+# from src.extensions.cache import cache
 from sqlalchemy import Column, Integer, String, ForeignKey, func, case
 from src.models.states import State
 from src.models.user_roles import UserRole

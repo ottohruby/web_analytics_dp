@@ -1,5 +1,5 @@
 from src.extensions.database import db
-from src.extensions.cache import cache
+# from src.extensions.cache import cache
 from enum import Enum
 from src.models.states import State
 

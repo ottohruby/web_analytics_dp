@@ -45,8 +45,9 @@ def init_database(app):
     db.init_app(app)
 
 def init_cache(app):
-    from src.extensions.cache import cache
-    cache.init_app(app)
+    # from src.extensions.cache import cache
+    # cache.init_app(app)
+    return
 
 def register_blueprints(app):
     from src.routes.admin import bp as admin_bp
