@@ -1,5 +1,3 @@
-SELECT cron.unschedule_all();
-
 SELECT cron.schedule('*/30 * * * * *', $$DO BEGIN PERFORM process_event_data(1); END$$);
 
 SELECT cron.schedule('*/1 * * * *', $$DO BEGIN PERFORM process_event_data(1); END$$);
