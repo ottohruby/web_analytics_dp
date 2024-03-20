@@ -6,7 +6,7 @@ resource "google_sql_database_instance" "main" {
     database_version = "POSTGRES_15"
   
   settings {
-    tier = "db-f1-micro" # 0.6 GB RAM, 1 Shared CPU ~ 8 USD / mo
+    tier = "db-g1-small" # 1.7 GB RAM, 1 Shared CPU
     edition = "ENTERPRISE"
     availability_type = "ZONAL"
 
