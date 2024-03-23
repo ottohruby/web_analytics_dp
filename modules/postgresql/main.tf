@@ -52,7 +52,7 @@ resource "google_sql_user" "user" {
 
     provisioner "local-exec" {
         command = <<EOF
-            psql postgresql://${google_sql_user.user.name}:${google_sql_user.user.password}@${google_sql_database_instance.main.public_ip_address}/postgres <<EOS 
+            psql postgresql://${var.db_user}:${var.db_password}@${google_sql_database_instance.main.public_ip_address}/postgres <<EOS 
                 CREATE EXTENSION pg_cron;
                 CREATE SCHEMA analytics;
                 $(cat ${path.module}/tables/0_states.sql)
