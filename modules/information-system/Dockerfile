@@ -12,4 +12,4 @@ COPY . .
 EXPOSE 8080
 
 # Set the command to run when the container starts
-CMD ["gunicorn"  , "-b", "0.0.0.0:8080", "app:app"]
+CMD ["gunicorn"  , "-b", "0.0.0.0:80", "app:app"]
