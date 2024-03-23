@@ -27,7 +27,7 @@ resource "google_compute_instance" "information-system" {
   machine_type = "e2-micro"
 
   metadata = {
-    gce-container-declaration = "spec:\n  containers:\n  - name: information-system\n    image: ${var.region}-docker.pkg.dev/${var.project_id}/message-consumer/information-system:latest\n    env:\n    - name: PUBSUB_PROJECT_ID\n      value: ${var.project_id}\n    - name: PUBSUB_SUBSCRIPTION_ID\n      value: data-logger-events--pull--realtime\n    - name: SQLALCHEMY_DATABASE_URI\n      value: postgresql://${var.db_user}:${var.db_password}@${var.sql_ip}/postgres\n    stdin: false\n    tty: false\n  restartPolicy: Always\n# This container declaration format is not public API and may change without notice. Please\n# use gcloud command-line tool or Google Cloud Console to run Containers on Google Compute Engine."
+    gce-container-declaration = "spec:\n  containers:\n  - name: information-system\n    image: ${var.region}-docker.pkg.dev/${var.project_id}/information-system/information-system:latest\n    env:\n    - name: PUBSUB_PROJECT_ID\n      value: ${var.project_id}\n    - name: PUBSUB_SUBSCRIPTION_ID\n      value: data-logger-events--pull--realtime\n    - name: SQLALCHEMY_DATABASE_URI\n      value: postgresql://${var.db_user}:${var.db_password}@${var.sql_ip}/postgres\n    stdin: false\n    tty: false\n  restartPolicy: Always\n# This container declaration format is not public API and may change without notice. Please\n# use gcloud command-line tool or Google Cloud Console to run Containers on Google Compute Engine."
   }
 
   name = "informartion-system"
