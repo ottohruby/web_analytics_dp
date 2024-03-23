@@ -22,19 +22,29 @@ resource "google_sql_database_instance" "main" {
     ip_configuration {
       ipv4_enabled = true
       authorized_networks {
-        value = "0.0.0.0/0" # All ips, for development
+        value = "0.0.0.0/0"
         name = "all"
       }
     }
   }
 }
 
+resource "google_sql_user" "root_user" {
+    instance = google_sql_database_instance.main.name
+    name     = "postgres"
+    password = var.db_password
+
+    depends_on = [
+        google_sql_database_instance.main
+    ]
+}
+
 // DATABASE USER
 resource "google_sql_user" "user" {
     instance = google_sql_database_instance.main.name
 
-    name     = var.db_credentials.db_user
-    password = var.db_credentials.db_password
+    name     = var.db_user
+    password = var.db_password
 
     depends_on = [
         google_sql_database_instance.main
@@ -44,7 +54,34 @@ resource "google_sql_user" "user" {
         command = <<EOF
             psql postgresql://${google_sql_user.user.name}:${google_sql_user.user.password}@${google_sql_database_instance.main.public_ip_address}/postgres <<EOS 
                 CREATE EXTENSION pg_cron;
-                CREATE TABLE my_table (id serial primary key, name text); INSERT INTO my_table (name) VALUES ('John');
+                CREATE SCHEMA analytics;
+                $(cat ${path.module}/tables/0_states.sql)
+
+                $(cat ${path.module}/tables/1_agg_windows.sql)
+                $(cat ${path.module}/tables/1_event_names.sql)
+                $(cat ${path.module}/tables/1_loggers.sql)
+
+                $(cat ${path.module}/tables/2_dimensions.sql)
+                $(cat ${path.module}/tables/2_event_stats.sql)
+                $(cat ${path.module}/tables/2_metric_functions.sql)
+                $(cat ${path.module}/tables/2_modules.sql)
+                $(cat ${path.module}/tables/2_roles.sql)
+                $(cat ${path.module}/tables/2_units.sql)
+                $(cat ${path.module}/tables/2_metrics.sql)
+                $(cat ${path.module}/tables/2_users.sql)
+                $(cat ${path.module}/tables/2_reports.sql)
+
+                $(cat ${path.module}/tables/3_allowed_event_dimensions.sql)
+                $(cat ${path.module}/tables/3_allowed_event_metrics.sql)
+                $(cat ${path.module}/tables/3_event_dimensions.sql)
+                $(cat ${path.module}/tables/3_event_metrics.sql)
+                $(cat ${path.module}/tables/3_module_roles.sql)
+                $(cat ${path.module}/tables/3_user_roles.sql)
+
+                $(cat ${path.module}/functions/insert_event_data.sql)
+                $(cat ${path.module}/functions/get_event_data.sql)
+                $(cat ${path.module}/functions/process_event_data.sql)
+                $(cat ${path.module}/functions/cron.sql)
             EOS
         EOF
     }
