@@ -1,10 +1,10 @@
-# This code is compatible with Terraform 4.25.0 and versions that are backward compatible to 4.25.0.
-# For information about validating this Terraform code, see https://developer.hashicorp.com/terraform/tutorials/gcp-get-started/google-cloud-platform-build#format-and-validate-the-configuration
+data "google_project" "project" {
+}
 
-resource "google_compute_instance" "instance-6" {
+resource "google_compute_instance" "message-consumer" {
   boot_disk {
     auto_delete = true
-    device_name = "instance-3"
+    device_name = "message-consumer"
 
     initialize_params {
       image = "projects/cos-cloud/global/images/cos-stable-109-17800-66-27"
@@ -27,17 +27,17 @@ resource "google_compute_instance" "instance-6" {
   machine_type = "e2-micro"
 
   metadata = {
-    gce-container-declaration = "spec:\n  containers:\n  - name: instance-6\n    image: europe-west1-docker.pkg.dev/otto-hruby-dp/message-consumer/message-consumer@sha256:fdacf62b60d96d38f0378756fb07d57d98c34bf46cae719c3031251ae6349d3f\n    env:\n    - name: PUBSUB_PROJECT_ID\n      value: otto-hruby-dp\n    - name: PUBSUB_SUBSCRIPTION_ID\n      value: data-logger-events--pull--realtime\n    - name: DB_CONNECTION_STRING\n      value: postgresql://postgres:postgres@35.187.7.142/postgres\n    stdin: false\n    tty: false\n  restartPolicy: Always\n# This container declaration format is not public API and may change without notice. Please\n# use gcloud command-line tool or Google Cloud Console to run Containers on Google Compute Engine."
+    gce-container-declaration = "spec:\n  containers:\n  - name: message-consumer-1\n    image: ${var.region}-docker.pkg.dev/${var.project_id}/message-consumer/message-consumer:latest\n    env:\n    - name: PUBSUB_PROJECT_ID\n      value: ${var.project_id}\n    - name: PUBSUB_SUBSCRIPTION_ID\n      value: data-logger-events--pull--realtime\n    - name: DB_CONNECTION_STRING\n      value: postgresql://${var.db_user}:${var.db_password}@${var.sql_ip}/postgres\n    stdin: false\n    tty: false\n  restartPolicy: Always\n# This container declaration format is not public API and may change without notice. Please\n# use gcloud command-line tool or Google Cloud Console to run Containers on Google Compute Engine."
   }
 
-  name = "instance-6"
+  name = "message-consumer-1"
 
   network_interface {
     access_config {
       network_tier = "PREMIUM"
     }
 
-    subnetwork = "projects/otto-hruby-dp/regions/europe-west1/subnetworks/default"
+    subnetwork = "projects/${var.project_id}/regions/${var.region}/subnetworks/default"
   }
 
   scheduling {
@@ -48,7 +48,7 @@ resource "google_compute_instance" "instance-6" {
   }
 
   service_account {
-    email  = "280193624624-compute@developer.gserviceaccount.com"
+    email  = "${data.google_project.project.number}-compute@developer.gserviceaccount.com"
     scopes = ["https://www.googleapis.com/auth/cloud-platform", "https://www.googleapis.com/auth/devstorage.read_only", "https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/monitoring.write", "https://www.googleapis.com/auth/service.management.readonly", "https://www.googleapis.com/auth/servicecontrol", "https://www.googleapis.com/auth/trace.append"]
   }
 
@@ -58,5 +58,5 @@ resource "google_compute_instance" "instance-6" {
     enable_vtpm                 = true
   }
 
-  zone = "europe-west1-b"
+  zone = "${var.region}-b"
 }
