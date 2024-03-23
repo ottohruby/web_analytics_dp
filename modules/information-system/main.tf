@@ -1,6 +1,10 @@
 data "google_project" "project" {
 }
 
+resource "google_service_account" "service_account" {
+  account_id   = "information-system"
+}
+
 resource "google_compute_instance" "information-system" {
   boot_disk {
     auto_delete = true
@@ -48,7 +52,7 @@ resource "google_compute_instance" "information-system" {
   }
 
   service_account {
-    email  = "${data.google_project.project.number}-compute@developer.gserviceaccount.com"
+    email  = google_service_account.service_account.email
     scopes = ["https://www.googleapis.com/auth/cloud-platform", "https://www.googleapis.com/auth/devstorage.read_only", "https://www.googleapis.com/auth/logging.write", "https://www.googleapis.com/auth/monitoring.write", "https://www.googleapis.com/auth/service.management.readonly", "https://www.googleapis.com/auth/servicecontrol", "https://www.googleapis.com/auth/trace.append"]
   }
 
