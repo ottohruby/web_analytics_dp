@@ -1,7 +1,8 @@
 variable "project_id" {
     type = string
-    default = "otto-hruby-dp"
+    default = "otto-hruby-dp2"
 }
+
 variable "region" {
     type = string
     default = "europe-west1"
@@ -9,7 +10,11 @@ variable "region" {
 
 variable "data-logger_domain"{
     type = string
-    default = "data-logger.ottohruby.cz"
+    default = ""
+}
+
+variable "db_password"{
+    type = string
 }
 
 variable "required_apis"{
