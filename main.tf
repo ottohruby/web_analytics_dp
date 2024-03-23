@@ -47,16 +47,24 @@ module "message-broker" {
     region = var.region 
 }
 
-module "message-consumer" {
-    source = "./modules/message-consumer"
-    depends_on = [google_project_service.api]
-
-}
-
 module "postgresql" {
   source = "./modules/postgresql"
   depends_on = [google_project_service.api]
 
   project_id = var.project_id
   region = var.region
+  db_password = var.db_password
+}
+
+module "message-consumer" {
+    source = "./modules/message-consumer"
+    depends_on = [google_project_service.api, module.postgresql
+    ]
+
+    project_id = var.project_id
+    region = var.region
+    sql_ip = module.postgresql.public_ip_address
+    db_user = module.postgresql.db_user
+    db_password = module.postgresql.db_password
+
 }
