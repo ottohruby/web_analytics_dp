@@ -68,3 +68,16 @@ module "message-consumer" {
     db_password = module.postgresql.db_password
 
 }
+
+module "information-system" {
+    source = "./modules/information-system"
+    depends_on = [google_project_service.api, module.postgresql
+    ]
+
+    project_id = var.project_id
+    region = var.region
+    sql_ip = module.postgresql.public_ip_address
+    db_user = module.postgresql.db_user
+    db_password = module.postgresql.db_password
+
+}
