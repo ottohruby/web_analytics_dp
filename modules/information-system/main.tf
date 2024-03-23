@@ -41,6 +41,8 @@ resource "google_compute_instance" "information-system" {
       network_tier = "PREMIUM"
     }
 
+    queue_count = 0
+    stack_type  = "IPV4_ONLY"
     subnetwork = "projects/${var.project_id}/regions/${var.region}/subnetworks/default"
   }
 
@@ -62,5 +64,6 @@ resource "google_compute_instance" "information-system" {
     enable_vtpm                 = true
   }
 
+  tags = ["http-server", "https-server"]
   zone = "${var.region}-b"
 }
