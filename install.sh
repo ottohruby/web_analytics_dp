@@ -1,15 +1,17 @@
 #!/bin/bash
 LOCATION=europe-west1
+LOGGER_DOMAIN=""
 
 function print_usage {
-  echo "Usage: bash install.sh -p project_id -d db_password [-l location]"
+  echo "Usage: bash install.sh -p project_id -d db_password [-l location -u data-logger-domain]"
 }
 
-while getopts 'p:l:d:' flag; do
+while getopts 'p:l:d:u:' flag; do
   case "${flag}" in
     p) PROJECT_ID="${OPTARG}" ;;
     l) LOCATION="${OPTARG}" ;;
     d) DB_PASSWORD="${OPTARG}" ;;
+    u) LOGGER_DOMAIN="${OPTARG}" ;;
     *) print_usage
        exit 1 ;;
   esac
@@ -47,3 +49,4 @@ terraform apply \
 -var project_id=$PROJECT_ID \
 -var region=$LOCATION \
 -var db_password=$DB_PASSWORD
+-var data-logger_domain=$LOGGER_DOMAIN
