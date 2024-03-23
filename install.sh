@@ -48,5 +48,5 @@ terraform init
 terraform apply \
 -var project_id=$PROJECT_ID \
 -var region=$LOCATION \
--var db_password=$DB_PASSWORD
+-var db_password=$DB_PASSWORD \
 -var data-logger_domain=$LOGGER_DOMAIN
