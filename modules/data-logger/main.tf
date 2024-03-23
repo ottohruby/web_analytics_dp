@@ -18,7 +18,12 @@ resource "google_cloud_run_v2_service" "data-logger" {
   template {
     service_account = google_service_account.service_account.email
     containers {
-      image = "${var.region}-docker.pkg.dev/${var.project_id}/data-logger/data-logger:latest"
+        image = "${var.region}-docker.pkg.dev/${var.project_id}/data-logger/data-logger:latest"
+
+        env {
+            name = "PUBSUB_PROJECT_ID"
+            value = "${var.project_id}"
+        }
     }
   }
 }
