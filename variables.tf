@@ -1,6 +1,5 @@
 variable "project_id" {
     type = string
-    default = "otto-hruby-dp2"
 }
 
 variable "region" {
