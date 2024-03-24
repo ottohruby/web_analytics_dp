@@ -111,7 +111,6 @@ def edit(id):
                 "metric": form.metric.data.split("||")[0],
                 "function": form.function.data,
                 "sort": form.sort.data,
-                "auto_refresh": form.auto_refresh.data,
                 "max_lines": int(form.max_values.data),
                 "show_legend": form.show_legend.data,
                 "show_cumsum": form.show_cumsum.data
