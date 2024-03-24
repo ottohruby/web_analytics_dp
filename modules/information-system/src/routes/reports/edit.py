@@ -74,7 +74,6 @@ def build_insert_form(controller):
         
         show_cumsum = SelectField('Chart - Show Cumulative Sum', choices=[('0', 'No'),('1', 'Yes')], default=report_settings.get("show_cumsum", '0'))
         show_legend = SelectField('Chart - Show Legend', choices=[('1', 'Yes'), ('0', 'No')], default=report_settings.get("show_legend"))
-        auto_refresh = SelectField('Auto Refresh', choices=[('0', 'No'), ('60', '60 s')], default=report_settings.get("auto_refresh"))
         max_values = SelectField('Chart - Max Lines', choices=[('5', '5'), ('10', '10')], default=report_settings.get("max_lines", '5'))
 
     form = InsertForm(obj=controller.model)
