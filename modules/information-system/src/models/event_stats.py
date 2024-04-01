@@ -31,7 +31,6 @@ colors = [
     (153, 0, 153)    # Purple (#990099)
 ]
 
-# Convert the colors to the required format
 formatted_colors_table = ['#{:02x}{:02x}{:02x}'.format(r, g, b) for r, g, b in colors]
 formatted_colors = ['rgba({}, {}, {}, 1)'.format(r, g, b) for r, g, b in colors]
 formatted_bg_colors = ['rgba({}, {}, {}, 0.6)'.format(r, g, b) for r, g, b in colors]
@@ -109,37 +108,38 @@ class EventStat(db.Model):
                 datetime_to
                 ).alias()).subquery()
         ).all()
-
-        res = []
-        for row in a:
-            b = dict()
-            b["ev_ts"] = row.o_ev_ts
-            b["event_name"] = row.o_event_name
-            for dim in row.o_dims:
-                b["dim_"+str(dim.get("id"))] = dim.get("val")
-            for metric in row.o_metrics:
-                b["metric_"+str(metric.get("id"))+"["+str(metric.get("unit"))+"]"+"|||"+str(metric.get("function_id"))] = metric.get("val")
-
-            res.append(b)
         
-        df = pd.json_normalize(res)
+        try:
+            res = []
+            for row in a:
+                b = dict()
+                b["ev_ts"] = row.o_ev_ts
+                b["event_name"] = row.o_event_name
+                for dim in row.o_dims:
+                    b["dim_"+str(dim.get("id"))] = dim.get("val")
+                for metric in row.o_metrics:
+                    b["metric_"+str(metric.get("id"))+"["+str(metric.get("unit"))+"]"+"|||"+str(metric.get("function_id"))] = metric.get("val")
 
-        groupby_cols = [col for col in df.columns if col.startswith('dim_')]
-        if(len(dimension) < 1):
+                res.append(b)
+        
+            df = pd.json_normalize(res)
+
+            groupby_cols = [col for col in df.columns if col.startswith('dim_')]
+            if(len(dimension) < 1):
                 columns_to_drop = [col for col in df.columns if col.startswith('dim_')]
                 df.drop(columns=columns_to_drop, inplace=True)
                 df['dim_event_name'] = df['event_name'].copy()
                 groupby_cols = ["dim_event_name"]
 
-        aggregation_functions = {}
-        if show_cumsum != True:
-            aggregation_functions = {
+            aggregation_functions = {}
+            if show_cumsum != True:
+                aggregation_functions = {
                 '1': 'sum',
                 '2': 'min',
                 '3': 'max'
             }
 
-        try:
+        
             agg_dict = {metric_id: aggregation_functions.get(f"{metric_id.split('|||')[-1]}", 'sum') for metric_id in df.columns if metric_id.startswith('metric_')}
             df['ev_ts'] = pd.to_datetime(df['ev_ts'], unit='s').dt.tz_localize(None)
             df['ev_ts'] =  df['ev_ts'] + timedelta(hours=timezone)
