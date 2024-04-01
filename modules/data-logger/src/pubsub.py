@@ -3,8 +3,6 @@ import json
 
 from src.config import PubsubConfig
 
-# Configure the batch to publish as soon as there are 10 messages
-# or 1 KiB of data, or 1 second has passed.
 batch_settings = pubsub_v1.types.BatchSettings(
         max_messages = PubsubConfig.MAX_MESSAGES,
         max_bytes = PubsubConfig.MAX_BYTES,
