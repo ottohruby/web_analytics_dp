@@ -174,7 +174,7 @@
             var display = 'none';
             var option = options[i].value;
             if(granularity == 2){
-                display = option == '30m' ? '' : 'none';
+                display = (option == '30m' || option == '60m')  ? '' : 'none';
             }  
             else if(granularity == 3){
                 display = (option == '24h' || option== '48h' || option== 'today' || option == 'absolute') ? '' : 'none'
