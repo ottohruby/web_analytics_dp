@@ -129,6 +129,9 @@ BEGIN
         SET is_processed = func_result
         WHERE event_id = ANY (row_record.event_ids);
 
+	DELETE FROM analytics.event_stats
+	WHERE input_aw_id = 1 and is_processed=1;
+
     END LOOP;
 END;
 $$ LANGUAGE PLPGSQL;
