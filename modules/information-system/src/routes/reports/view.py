@@ -53,6 +53,9 @@ def view_data(id):
         elif ts == '30m':
             start_date = datetime.datetime.utcnow() - datetime.timedelta(minutes=30)
             end_date = datetime.datetime.utcnow()
+        elif ts == '60m':
+            start_date = datetime.datetime.utcnow() - datetime.timedelta(minutes=60)
+            end_date = datetime.datetime.utcnow()
         elif ts == '24h':
             start_date = datetime.datetime.utcnow() - datetime.timedelta(days=1)
             end_date = datetime.datetime.utcnow()
