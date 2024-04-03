@@ -59,7 +59,7 @@ def build_insert_form(controller):
         timezone_choices = [(str(i), '+' + str(i)) if i > 0 else (str(i), str(i)) for i in range(-12, 15)]
         timezone = SelectField('Time Zone', choices=timezone_choices, default=report_settings.get("timezone"))
         time_selection = SelectField('Time Selection', 
-                                    choices=[('30m', 'Last 30 Minutes'), ('24h', 'Last 24 Hours'), ('48h', 'Last 48 Hours'), 
+                                    choices=[('30m', 'Last 30 Minutes'), ('60m', 'Last 60 Minutes'), ('24h', 'Last 24 Hours'), ('48h', 'Last 48 Hours'), 
                                               ('7d', 'Last 7 Days'), ('14d', 'Last 14 Days'), ('28d', 'Last 28 Days'), 
                                               ('today', 'Today'), ('absolute', 'Fixed Range')], 
                                               default=report_settings.get("time_selection"))
