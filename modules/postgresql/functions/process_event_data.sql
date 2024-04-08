@@ -15,6 +15,8 @@ BEGIN
             WHERE   
                 es.is_processed = 0
                 AND es.aw_id = input_aw_id      
+				AND (now() - ev_ts) > interval '15 second'
+            order by 1 asc limit 5000  
         ),
         allowed_dims AS (
             SELECT 
@@ -40,7 +42,7 @@ BEGIN
                 max(ev_ts) AS ev_ts,
                 array_agg(vals.metric_id ORDER BY vals.metric_id) AS metric_ids,
                 array_agg(vals.value ORDER BY vals.metric_id) AS metric_vals, -- todo conversion
-                array_agg(jsonb_build_object('id', vals.metric_id, 'val', vals.value * units.amount, 'unit', coalesce(units.base_unit_id, vals.unit_id)) ORDER BY vals.metric_id) AS metrics
+                array_agg(jsonb_build_object('id', vals.metric_id, 'val', vals.value * units.amount, 'unit', coalesce(units.base_unit_id, vals.unit_id), 'function_id', vals.function_id) ORDER BY vals.metric_id) AS metrics
             FROM 
                 new_events
             INNER JOIN analytics.allowed_event_metrics allowed
@@ -73,7 +75,7 @@ BEGIN
             GROUP BY 1, 2, 3, 4
         )
         
-        SELECT 
+                SELECT 
             lg_id,
             en_id,
             ev_ts,
@@ -82,11 +84,8 @@ BEGIN
             array_agg(jsonb_build_object(
                     'id', subquery.key,
                     'unit', subquery.unit,
-                    'val', 
-                    CASE
-                        WHEN 1 > 0 THEN subquery.value_sum
-                        ELSE 0
-                    END
+                    'val', subquery.value,
+					'function_id',subquery.function_id
                 )) AS metrics
         FROM 
             (
@@ -96,15 +95,17 @@ BEGIN
                     en_id,
                     dims,
                     event_ids,
-                    (elem[0]->>'id') AS key,
-                    max((elem[0]->>'unit')) AS unit,
-                    SUM((elem[0]->>'val')::numeric) AS value_sum,
-                    MIN((elem[0]->>'val')::numeric) AS value_min,
-                    MAX((elem[0]->>'val')::numeric) AS value_max
+                    (el->>'id') AS key,
+					(el->>'function_id') as function_id,
+                    max((el->>'unit')) AS unit,
+					case 
+						when (el->>'function_id') = '2' then MIN((el->>'val')::numeric)
+						when (el->>'function_id') = '3' then MAX((el->>'val')::numeric)
+						else SUM((el->>'val')::numeric) end AS value
                 FROM 
-                    base, jsonb_array_elements(metrics) AS elem
+                    base, jsonb_array_elements(metrics) AS elem, jsonb_array_elements(elem) AS el
                 GROUP BY 
-                    1, 2, 3, 4, 5, 6
+                    1, 2, 3, 4, 5, 6,7
             ) AS subquery
         GROUP BY 
             1, 2, 3, 4, 5
@@ -129,8 +130,8 @@ BEGIN
         SET is_processed = func_result
         WHERE event_id = ANY (row_record.event_ids);
 
-	DELETE FROM analytics.event_stats
-	WHERE input_aw_id = 1 and is_processed=1;
+	-- DELETE FROM analytics.event_stats
+	-- WHERE aw_id = 1 and is_processed=1;
 
     END LOOP;
 END;
