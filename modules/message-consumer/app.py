@@ -63,7 +63,6 @@ def extract(project_id, subscription_id, timeout=10, max_messages=10):
         handle_message(message_data)
 
 
-    # Limit the subscriber to only have ten outstanding messages at a time.
     flow_control = pubsub_v1.types.FlowControl(max_messages=max_messages)
 
     streaming_pull_future = subscriber.subscribe(
